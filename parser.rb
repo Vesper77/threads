@@ -1,6 +1,10 @@
 require 'yaml'
 require 'singleton'
 
+#Singleton Class which parses
+#the yml configuration file
+#and returns config values
+
 
 class Parser
   include Singleton
