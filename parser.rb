@@ -1,6 +1,7 @@
 require 'yaml'
 require 'singleton'
 
+
 class Parser
   include Singleton
   CONFIG_FILE = 'config.yml'
