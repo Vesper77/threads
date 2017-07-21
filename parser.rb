@@ -2,6 +2,7 @@ require 'yaml'
 require 'singleton'
 
 #Singleton Class which parses
+#the yml configuration file
 
 
 class Parser
