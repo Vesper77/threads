@@ -1,14 +1,14 @@
 require 'pg'
-USER = 'valentine'
-PASSWORD = '123'
+require_relative 'parse_data'
+
 
 class SpeedTest
 
   attr_accessor :finished
 
   def connection
-    @con = PG.connect :dbname => 'testdb', :user => USER,
-                      :password => PASSWORD
+    @con = PG.connect :dbname => Parser.config['db_name'], :user => Parser.config['db_user'],
+                      :password => Parser.config['db_password']
     @finished = 0
   end
 
@@ -44,38 +44,39 @@ class ThreadCLock
   end
 
   def prepare_instances
-
-
     @threads.times.map do
       SpeedTest.new
     end
   end
 
-  def define_threads
-    array = prepare_instances
-    threads = []
-    start_time = Time.now
+  def one_execute(arr, array, start_time,index)
+    arr.db_execute("t" + index.to_s, @str, @records / @threads) do
+      str = "\r"
+      array.each_with_index do |obj, ind|
+        str += "|| ##{ind} | #{obj.finished} ||"
+      end
+      total_seconds = Time.now - start_time
+      seconds = ((total_seconds % 3600) % 60).to_i
+      str += "  #{seconds}"
+      print str
+    end
+  end
+
+  def instances_execute(array, threads, start_time)
     array.each_with_index do |arr, index|
       threads << Thread.new do
-
-
         arr.connection
-        arr.db_execute("t" + index.to_s, @str, @records / @threads) do
-          str = "\r"
-          array.each_with_index do |obj, index|
-            str += "|| ##{index} | #{obj.finished} ||"
-          end
-          total_seconds = Time.now - start_time
-          seconds = ((total_seconds % 3600) % 60).to_i
-          str += "  #{seconds}"
-          print str
-        end
+        one_execute(arr, array, start_time,index)
         arr.db_close
         puts index
       end
     end
+  end
 
-
+  def define_threads
+    array = prepare_instances
+    start_time = Time.now
+    instances_execute(array, threads = [], start_time)
     threads
   end
 
