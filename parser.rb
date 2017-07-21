@@ -1,6 +1,8 @@
 require 'yaml'
 require 'singleton'
 
+#Singleton Class which parses
+
 
 class Parser
   include Singleton
