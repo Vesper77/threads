@@ -5,9 +5,9 @@ class Parser
   include Singleton
   CONFIG_FILE = 'config.yml'
 
+
   def initialize
     @config = YAML.load(File.read(CONFIG_FILE))
-    # @config = File.read(CONFIG_FILE)
   end
 
   def db_name
