@@ -1,13 +1,16 @@
 require 'pg'
 require_relative 'parser'
 
+#Todo security and abort many fileloads
+
 class Preparer
 
   attr_accessor :finished
 
   def connection
-    @con = PG.connect :dbname => Parser.config['db_name'], :user => Parser.config['db_user'],
-                      :password => Parser.config['db_password']
+    parser = Parser.instance
+    @con = PG.connect :dbname => parser.db_name, :user => parser.db_user,
+                      :password => parser.db_password
     @finished = 0
   end
 

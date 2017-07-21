@@ -1,13 +1,26 @@
 require 'yaml'
+require 'singleton'
 
 class Parser
+  include Singleton
   CONFIG_FILE = 'config.yml'
-  class << self
 
-    def config
-      @config ||= YAML.load(File.read(CONFIG_FILE))
-    end
-
+  def initialize
+    @config = YAML.load(File.read(CONFIG_FILE))
+    # @config = File.read(CONFIG_FILE)
   end
+
+  def db_name
+    @config['db_name']
+  end
+
+  def db_password
+    @config['db_password']
+  end
+
+  def db_user
+    @config['db_user']
+  end
+
 end
 
